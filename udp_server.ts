@@ -1,51 +1,31 @@
-var udp = require('dgram');
+const UDP = require('dgram');
 
-// --------------------creating a udp server --------------------
+const SERVER = UDP.createSocket('udp4');
 
-// creating a udp server
-var server = udp.createSocket('udp4');
+const port = 2222
 
-// emits when any error occurs
-server.on('error', function (error: any) {
-    console.log('Error: ' + error);
-    server.close();
-});
+server.on('listening', () => {
+    // Server address it’s using to listen
 
-// emits on new datagram msg
-server.on('message', function (msg: any, info: any) {
-    console.log('Data received from client : ' + msg.toString());
-    console.log('Received %d bytes from %s:%d\n', msg.length, info.address, info.port);
+    const address = server.address();
 
-    //sending msg
-    server.send(msg, info.port, 'localhost', function (error:any) {
-        if (error) {
-            client.close();
+    console.log('Listining to ', 'Address: ', address.address, 'Port: ', address.port);
+})
+
+server.on('message', (message: any, info: any) => {
+    console.log('Message', message.toString());
+
+    const response = Buffer.from('Message Received');
+
+    //sending back response to client
+
+    server.send(response, info.port, info.address, (err: Error) => {
+        if (err) {
+            console.error('Failed to send response !!');
         } else {
-            console.log('Data sent !!!');
+            console.log('Response send Successfully');
         }
+    })
+})
 
-    });
-
-});
-
-//emits when socket is ready and listening for datagram msgs
-server.on('listening', function () {
-    var address = server.address();
-    var port = address.port;
-    var family = address.family;
-    var ipaddr = address.address;
-    console.log('Server is listening at port' + port);
-    console.log('Server ip :' + ipaddr);
-    console.log('Server is IP4/IP6 : ' + family);
-});
-
-//emits after the socket is closed using socket.close();
-server.on('close', function () {
-    console.log('Socket is closed !');
-});
-
-server.bind(2222);
-
-setTimeout(function () {
-    server.close();
-}, 8000);
+server.bind(PORT)

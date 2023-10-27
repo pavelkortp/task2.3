@@ -1,30 +1,20 @@
 "use strict";
-var udp = require('dgram');
-// creating a client socket
-var client = udp.createSocket('udp4');
-//buffer msg
-var data = Buffer.from('siddheshrane');
-client.on('message', function (msg, info) {
-    console.log('Data received from server : ' + msg.toString());
-    console.log('Received %d bytes from %s:%d\n', msg.length, info.address, info.port);
+const UDP1 = require('dgram');
+const CLIENT = UDP1.createSocket('udp4');
+const PORT = 2222;
+const hostname = 'localhost';
+CLIENT.on('message', (message, info) => {
+    // get the information about server address, port, and size of packet received.
+    console.log('Address: ', info.address, 'Port: ', info.port, 'Size: ', info.size);
+    //read message from server
+    console.log('Message from server', message.toString());
 });
-//sending msg
-client.send(data, 2222, 'localhost', function (error) {
-    if (error) {
-        client.close();
+const packet = Buffer.from('This is a message from client');
+CLIENT.send(packet, PORT, hostname, (err) => {
+    if (err) {
+        console.error('Failed to send packet !!');
     }
     else {
-        console.log('Data sent !!!');
-    }
-});
-var data1 = Buffer.from('hello');
-var data2 = Buffer.from('world');
-//sending multiple msg
-client.send([data1, data2], 2222, 'localhost', function (error) {
-    if (error) {
-        client.close();
-    }
-    else {
-        console.log('Data sent !!!');
+        console.log('Packet send !!');
     }
 });
