@@ -1,6 +1,7 @@
 var net = require('net');
 
 var server = net.createServer(function (socket: any) {
+    
     socket.write('Hello from server\r\n');
     socket.pipe(socket);
 });
