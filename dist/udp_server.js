@@ -1,17 +1,17 @@
 "use strict";
 const UDP = require('dgram');
-const server = UDP.createSocket('udp4');
+const SERVER = UDP.createSocket('udp4');
 const port = 2222;
-server.on('listening', () => {
+SERVER.on('listening', () => {
     // Server address it’s using to listen
-    const address = server.address();
+    const address = SERVER.address();
     console.log('Listining to ', 'Address: ', address.address, 'Port: ', address.port);
 });
-server.on('message', (message, info) => {
+SERVER.on('message', (message, info) => {
     console.log('Message', message.toString());
     const response = Buffer.from('Message Received');
     //sending back response to client
-    server.send(response, info.port, info.address, (err) => {
+    SERVER.send(response, info.port, info.address, (err) => {
         if (err) {
             console.error('Failed to send response !!');
         }
@@ -20,4 +20,4 @@ server.on('message', (message, info) => {
         }
     });
 });
-server.bind(port);
+SERVER.bind(port);

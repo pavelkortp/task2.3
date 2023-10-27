@@ -13,10 +13,11 @@ CLIENT.on('message', (message: any, info: any) => {
 
     //read message from server
 
-    console.log('Message from server', message.toString());
+    console.log('Message from server: ', message.toString());
+    CLIENT.close();
 })
 
-const packet = Buffer.from('This is a message from client');
+const packet = Buffer.from('This is a message from client: ');
 
 CLIENT.send(packet, PORT, hostname, (err: Error) => {
     if (err) {
